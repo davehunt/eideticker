@@ -216,6 +216,8 @@ def main(args=sys.argv[1:]):
 
     device_prefs = eideticker.getDevicePrefs(options)
     device = eideticker.getDevice(**device_prefs)
+    if device.marionette.session:
+        device.marionette.delete_session()
 
     devices = {}
     devicefile = os.path.join(outputdir, 'devices.json')
