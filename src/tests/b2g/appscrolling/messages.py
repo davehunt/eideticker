@@ -1,13 +1,8 @@
-from gaiatest.apps.messages.app import Messages
-from marionette.by import By
-from marionette.errors import NoSuchElementException
-from marionette.errors import ElementNotVisibleException
-from marionette.wait import Wait
-
 from eideticker.test import B2GAppActionTest
+from eideticker.b2gtestmixins import B2GMessagesMixin
 
 
-class Test(B2GAppActionTest):
+class Test(B2GMessagesMixin, B2GAppActionTest):
     def __init__(self, testinfo, options, device, capture_controller):
         B2GAppActionTest.__init__(self, testinfo, options, device, capture_controller)
 
@@ -26,16 +21,3 @@ class Test(B2GAppActionTest):
             self.cmds.append(['drag', scroll_x1, scroll_y1, scroll_x1, scroll_y2, 100, 10])
             self.cmds.append(['drag', scroll_x1, scroll_y2, scroll_x1, scroll_y1, 100, 10])
             self.cmds.append(['drag', scroll_x1, scroll_y2, scroll_x1, scroll_y1, 100, 10])
-
-    def populate_databases(self):
-        self.device.b2gpopulate.populate_messages(200, restart=False)
-
-    def prepare_app(self):
-        # launch the messages app and wait for the messages to be displayed,
-        # the first launch after populating the data takes a long time.
-        messages = Messages(self.device.marionette)
-        messages.launch()
-        Wait(self.device.marionette, 120, ignored_exceptions=(
-            NoSuchElementException, ElementNotVisibleException)).until(
-            lambda m: m.find_element(
-                By.CSS_SELECTOR, '#threads-container li').is_displayed())

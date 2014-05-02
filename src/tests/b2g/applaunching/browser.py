@@ -2,18 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest.apps.camera.app import Camera
-from gaiatest.gaia_test import GaiaApps
+from marionette import Wait
 
 from eideticker.test import B2GAppStartupTest
 
 
 class Test(B2GAppStartupTest):
-
-    def prepare_app(self):
-        apps = GaiaApps(self.device.marionette)
-        apps.set_permission('Camera', 'geolocation', 'deny')
+    def __init__(self, testinfo, appname, **kwargs):
+        B2GAppStartupTest.__init__(self, testinfo, appname, **kwargs)
 
     def wait_for_content_ready(self):
-        app = Camera(self.device.marionette)
-        app.wait_for_capture_ready()
+        Wait(self.marionette).until(lambda m: m.execute_script(
+            'return window.wrappedJSObject.Browser.hasLoaded;'))
